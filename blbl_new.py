@@ -21,7 +21,7 @@ def in_mysql(data):
     try:
         cursor.execute(tsql)
         data = cursor.fetchall()
-        if
+
 
     except Exception as e:
         print(e)
