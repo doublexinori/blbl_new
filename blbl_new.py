@@ -21,8 +21,6 @@ def in_mysql(data):
     try:
         cursor.execute(tsql)
         data = cursor.fetchall()
-
-
     except Exception as e:
         print(e)
         db.rollback()
