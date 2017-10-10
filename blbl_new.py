@@ -7,6 +7,7 @@ import MySQLdb
 from bs4 import BeautifulSoup
 import json
 import random
+import blbl_time
 
 jp_title = ''
 cn_title = ''
@@ -28,40 +29,12 @@ def in_mysql(data):
     db.close()
 
 
-def posthtml(url, season_id):
-    try:
-        login_data = parse.urlencode([
-            ('episode_id', season_id),
-        ]).encode(encoding='UTF8')
-        opener = request.build_opener()
-        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        page = opener.open(url, data=login_data).read()
-        soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
-        return soup
-    except Exception as err:
-        print(err)
-        time.sleep(random.randint(10, 20))
-
-
-def gethtml(url):
-    try:
-        opener = request.build_opener()
-        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        page = opener.open(url).read()
-        soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
-        return soup
-    except Exception as err:
-        print(err)
-        time.sleep(random.randint(10, 20))
-        # continue
-
-
 def get_title():
     global jp_title, cn_title
     jp_title = ''
     cn_title = ''
-    html = gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
-    html_cn = gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
+    html = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
+    html_cn = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
     rehtml = json.loads(str(html))
     rehtml_cn = json.loads(str(html_cn))
     for i in range(len(rehtml['result'])):
@@ -80,10 +53,9 @@ def get_title():
 
 def get_av(ep_id, title, num):
     get = True
-    mail = {}
     while get:
         try:
-            av_html = posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
+            av_html = blbl_time.posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
             av_json = json.loads(str(av_html))
             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
                 av_id = av_json['result']['aid']
@@ -105,7 +77,7 @@ def japan_animate():
             date = time.strftime('%m%d', time.localtime())
             if now == '0000':
                 get_title()
-            html = gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
+            html = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
             rehtml = json.loads(str(html))
             for i in range(len(rehtml['result'])):
                 if rehtml['result'][i - 1]['is_today'] == 1:
@@ -139,7 +111,7 @@ def china_animate():
             date = time.strftime('%m%d', time.localtime())
             if now == '0000':
                 get_title()
-            html_cn = gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
+            html_cn = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
             rehtml_cn = json.loads(str(html_cn))
             for i in range(len(rehtml_cn['result'])):
                 if rehtml_cn['result'][i - 1]['is_today'] == 1:
