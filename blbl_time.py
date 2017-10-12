@@ -18,6 +18,7 @@ def in_mysql(data):
     try:
         cursor.execute(sql)
         db.commit()
+        print('sql')
     except Exception as e:
         print(e)
         db.rollback()
@@ -58,6 +59,7 @@ def get_av(ep_id, title, num):
     now = 1
     while get:
         try:
+            print('in')
             end = datetime.datetime.now().second
             av_html = posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
             av_json = json.loads(str(av_html))
@@ -78,16 +80,16 @@ def get_av(ep_id, title, num):
 
 def japan_animate():
     jp_th = ''
-    s = True
+    determine = True
     while True:
         try:
             newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H:%M', time.localtime())
-            if now.find('00:00') != -1 and s:
+            if now.find('00:00') != -1 and determine:
                 jp_th = ''
-                s = False
+                determine = False
             if now.find('00:01') != -1:
-                s = True
+                determine = True
             html = gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
             rehtml = json.loads(str(html))
             for i in range(len(rehtml['result'])):
@@ -113,16 +115,16 @@ def japan_animate():
 
 def china_animate():
     cn_th = ''
-    s = True
+    determine = True
     while True:
         try:
             newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H:%M', time.localtime())
-            if now.find('00:00') != -1 and s:
+            if now.find('00:00') != -1 and determine:
                 cn_th = ''
-                s = False
+                determine = False
             if now.find('00:01') != -1:
-                s = True
+                determine = True
             html_cn = gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
             rehtml_cn = json.loads(str(html_cn))
             for i in range(len(rehtml_cn['result'])):

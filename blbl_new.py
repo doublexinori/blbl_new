@@ -4,6 +4,7 @@ from urllib import parse
 import time, os
 import urllib.request as request
 import MySQLdb
+import datetime
 from bs4 import BeautifulSoup
 import json
 import random
@@ -16,11 +17,12 @@ cn_title = ''
 def in_mysql(data):
     db = MySQLdb.connect("localhost", "root", "root", "blbl_new", use_unicode=True, charset="utf8")
     cursor = db.cursor()
-    tsql = "select * from new_animate"
-    sql = "INSERT INTO new_animate(rejson) VALUES (\'" + data + "\')"
+    # tsql = "select * from new_animate"
+    sql = "INSERT INTO now_animate(rejson) VALUES (\'" + data + "\')"
     try:
-        cursor.execute(tsql)
-        data = cursor.fetchall()
+        cursor.execute(sql)
+        # data = cursor.fetchall()
+        db.commit()
     except Exception as e:
         print(e)
         db.rollback()
@@ -51,14 +53,23 @@ def get_title():
 
 def get_av(ep_id, title, num):
     get = True
+    date = time.strftime('%m%d', time.localtime())
+    now = 1
     while get:
         try:
+            end = datetime.datetime.now().second
             av_html = blbl_time.posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
             av_json = json.loads(str(av_html))
             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
                 av_id = av_json['result']['aid']
+                animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
+                data = json.dumps(animate, ensure_ascii=False)
+                in_mysql(data)
                 get = False
             time.sleep(15)
+            if end - now > 36000:
+                print(title + ' is not update')
+                get = False
         except Exception as e:
             print(e)
             time.sleep(15)
@@ -66,6 +77,7 @@ def get_av(ep_id, title, num):
 
 def japan_animate():
     jp_th = ''
+    determine = True
     while True:
         try:
             global jp_title
@@ -73,8 +85,11 @@ def japan_animate():
             newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H%M', time.localtime())
             date = time.strftime('%m%d', time.localtime())
-            if now == '0000':
+            if now == '0000' and determine:
                 get_title()
+                determine = False
+            if now == '0001':
+                determine = True
             html = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_global')
             rehtml = json.loads(str(html))
             for i in range(len(rehtml['result'])):
@@ -100,6 +115,7 @@ def japan_animate():
 
 def china_animate():
     cn_th = ''
+    determine = True
     while True:
         try:
             global cn_title
@@ -107,8 +123,11 @@ def china_animate():
             newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H%M', time.localtime())
             date = time.strftime('%m%d', time.localtime())
-            if now == '0000':
+            if now == '0000' and determine:
                 get_title()
+                determine = False
+            if now == '0001':
+                determine = True
             html_cn = blbl_time.gethtml('https://bangumi.bilibili.com/web_api/timeline_cn')
             rehtml_cn = json.loads(str(html_cn))
             for i in range(len(rehtml_cn['result'])):
