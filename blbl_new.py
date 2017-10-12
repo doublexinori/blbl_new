@@ -1,32 +1,13 @@
 # -*-coding:utf-8-*-
 import threading
-from urllib import parse
 import time, os
-import urllib.request as request
 import MySQLdb
 import datetime
-from bs4 import BeautifulSoup
 import json
-import random
 import blbl_time
 
 jp_title = ''
 cn_title = ''
-
-
-def in_mysql(data):
-    db = MySQLdb.connect("localhost", "root", "root", "blbl_new", use_unicode=True, charset="utf8")
-    cursor = db.cursor()
-    # tsql = "select * from new_animate"
-    sql = "INSERT INTO now_animate(rejson) VALUES (\'" + data + "\')"
-    try:
-        cursor.execute(sql)
-        # data = cursor.fetchall()
-        db.commit()
-    except Exception as e:
-        print(e)
-        db.rollback()
-    db.close()
 
 
 def get_title():
@@ -51,28 +32,28 @@ def get_title():
                 cn_title += rehtml_cn['result'][i - 1]['seasons'][j - 1]['title'] + str(num_cn) + ','
 
 
-def get_av(ep_id, title, num):
-    get = True
-    date = time.strftime('%m%d', time.localtime())
-    now = 1
-    while get:
-        try:
-            end = datetime.datetime.now().second
-            av_html = blbl_time.posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
-            av_json = json.loads(str(av_html))
-            if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
-                av_id = av_json['result']['aid']
-                animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
-                data = json.dumps(animate, ensure_ascii=False)
-                in_mysql(data)
-                get = False
-            time.sleep(15)
-            if end - now > 36000:
-                print(title + ' is not update')
-                get = False
-        except Exception as e:
-            print(e)
-            time.sleep(15)
+# def get_av(ep_id, title, num):
+#     get = True
+#     date = time.strftime('%m%d', time.localtime())
+#     now = 1
+#     while get:
+#         try:
+#             end = datetime.datetime.now().second
+#             av_html = blbl_time.posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
+#             av_json = json.loads(str(av_html))
+#             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
+#                 av_id = av_json['result']['aid']
+#                 animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
+#                 data = json.dumps(animate, ensure_ascii=False)
+#                 blbl_time.in_mysql(data, str(av_id))
+#                 get = False
+#             time.sleep(15)
+#             if end - now > 36000:
+#                 print(title + ' is not update')
+#                 get = False
+#         except Exception as e:
+#             print(e)
+#             time.sleep(15)
 
 
 def japan_animate():
@@ -102,7 +83,7 @@ def japan_animate():
                             num = s.replace('话', '')
                             print(num)
                             jp_title += title + str(num) + ','
-                            t = threading.Thread(target=get_av, args=(ep_id, title, num))
+                            t = threading.Thread(target=blbl_time.get_av, args=(ep_id, title, num))
                             t.setName(title)
                             if jp_th.find(date + title) == -1:
                                 jp_th += date + title
@@ -140,7 +121,7 @@ def china_animate():
                             num = s.replace('话', '')
                             print(num)
                             cn_title += title + str(num) + ','
-                            t = threading.Thread(target=get_av, args=(ep_id, title, num))
+                            t = threading.Thread(target=blbl_time.get_av, args=(ep_id, title, num))
                             t.setName(title)
                             if cn_th.find(date + title) == -1:
                                 cn_th += date + title

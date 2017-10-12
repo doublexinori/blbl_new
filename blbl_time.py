@@ -11,14 +11,24 @@ import random
 DIR = os.path.dirname(__file__)
 
 
-def in_mysql(data):
+def in_mysql(data, av_id):
     db = MySQLdb.connect("localhost", "root", "root", "blbl_new", use_unicode=True, charset="utf8")
     cursor = db.cursor()
+    tsql = "select rejson from new_animate"
     sql = "INSERT INTO new_animate(rejson) VALUES (\'" + data + "\')"
     try:
-        cursor.execute(sql)
-        db.commit()
-        print('sql')
+        cursor.execute(tsql)
+        data = cursor.fetchall()
+        animatelist = []
+        for strD in data:
+            animatelist.append(strD)
+        for i in range(len(animatelist)):
+            animatelist[i] = str(animatelist[i])
+        if ''.join(animatelist).find(av_id) == -1:
+            cursor.execute(sql)
+            db.commit()
+            print('sql')
+        # data = cursor.fetchall()
     except Exception as e:
         print(e)
         db.rollback()
@@ -57,6 +67,7 @@ def get_av(ep_id, title, num):
     get = True
     date = time.strftime('%m%d', time.localtime())
     now = 1
+    print('th')
     while get:
         try:
             print('in')
@@ -67,8 +78,9 @@ def get_av(ep_id, title, num):
                 av_id = av_json['result']['aid']
                 animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
                 data = json.dumps(animate, ensure_ascii=False)
-                in_mysql(data)
+                in_mysql(data, str(av_id))
                 get = False
+                print('my')
             if end - now > 36000:
                 print(title + ' is not update')
                 get = False
