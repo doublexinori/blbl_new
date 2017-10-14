@@ -5,10 +5,14 @@ import time, os, MySQLdb
 import urllib.request as request
 import datetime
 from bs4 import BeautifulSoup
-import json
+import json, logging
 import random
 
 DIR = os.path.dirname(__file__)
+
+
+logging.basicConfig(level=logging.INFO,
+                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 def in_mysql(data, av_id):
@@ -70,7 +74,7 @@ def get_av(ep_id, title, num):
     while get:
         try:
             date = time.strftime('%m%d', time.localtime())
-            print('in')
+            logging.info('in')
             end = datetime.datetime.now().second
             av_html = posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
             av_json = json.loads(str(av_html))
@@ -121,10 +125,10 @@ def japan_animate():
                             if jp_th.find(title + str(num)) == -1:
                                 jp_th += title + str(num) + ','
                                 t.start()
-            print(newtime + ',next')
+            logging.info(newtime + ',next')
             time.sleep(15)
         except Exception as e:
-            print(e)
+            logging.error(e)
             time.sleep(15)
 
 
@@ -156,10 +160,10 @@ def china_animate():
                             if cn_th.find(title + str(num)) == -1:
                                 cn_th += title + str(num) + ','
                                 t.start()
-            print(newtime + ',next')
+            logging.info(newtime + ',next')
             time.sleep(15)
         except Exception as e:
-            print(e)
+            logging.error(e)
             time.sleep(15)
 
 

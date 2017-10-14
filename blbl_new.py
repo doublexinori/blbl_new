@@ -1,13 +1,14 @@
 # -*-coding:utf-8-*-
 import threading
 import time, os
-import MySQLdb
-import datetime
-import json
+import json, logging
 import blbl_time
 
 jp_title = ''
 cn_title = ''
+
+logging.basicConfig(level=logging.WARNING,
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 def get_title():
@@ -64,9 +65,9 @@ def japan_animate():
                             if jp_th.find(date + title) == -1:
                                 jp_th += date + title
                                 t.start()
-            print(newtime + ',next')
+            logging.info(newtime + ',next')
         except Exception as e:
-            print(e)
+            logging.error(e)
             time.sleep(15)
 
 
@@ -102,9 +103,9 @@ def china_animate():
                             if cn_th.find(date + title) == -1:
                                 cn_th += date + title
                                 t.start()
-            print(newtime + ',next')
+            logging.info(newtime + ',next')
         except Exception as e:
-            print(e)
+            logging.error(e)
             time.sleep(15)
 
 
