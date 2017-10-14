@@ -28,7 +28,7 @@ def in_mysql(data, av_id):
             cursor.execute(sql)
             db.commit()
             print('sql')
-        # data = cursor.fetchall()
+            # data = cursor.fetchall()
     except Exception as e:
         print(e)
         db.rollback()
@@ -81,6 +81,9 @@ def get_av(ep_id, title, num):
                 in_mysql(data, str(av_id))
                 get = False
                 print('my')
+            elif str(av_json['message']).find('根据版权方要求') != -1:
+                print(title + 'do not watch')
+                get = False
             if end - now > 36000:
                 print(title + ' is not update')
                 get = False
