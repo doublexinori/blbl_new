@@ -65,11 +65,11 @@ def gethtml(url):
 
 def get_av(ep_id, title, num):
     get = True
-    date = time.strftime('%m%d', time.localtime())
     now = 1
     print('th')
     while get:
         try:
+            date = time.strftime('%m%d', time.localtime())
             print('in')
             end = datetime.datetime.now().second
             av_html = posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)

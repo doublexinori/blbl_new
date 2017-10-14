@@ -32,30 +32,6 @@ def get_title():
                 cn_title += rehtml_cn['result'][i - 1]['seasons'][j - 1]['title'] + str(num_cn) + ','
 
 
-# def get_av(ep_id, title, num):
-#     get = True
-#     date = time.strftime('%m%d', time.localtime())
-#     now = 1
-#     while get:
-#         try:
-#             end = datetime.datetime.now().second
-#             av_html = blbl_time.posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
-#             av_json = json.loads(str(av_html))
-#             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
-#                 av_id = av_json['result']['aid']
-#                 animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
-#                 data = json.dumps(animate, ensure_ascii=False)
-#                 blbl_time.in_mysql(data, str(av_id))
-#                 get = False
-#             time.sleep(15)
-#             if end - now > 36000:
-#                 print(title + ' is not update')
-#                 get = False
-#         except Exception as e:
-#             print(e)
-#             time.sleep(15)
-
-
 def japan_animate():
     jp_th = ''
     determine = True
