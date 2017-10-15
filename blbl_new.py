@@ -58,14 +58,13 @@ def japan_animate():
                             ep_id = rehtml['result'][i - 1]['seasons'][j - 1]['ep_id']
                             s = str(rehtml['result'][i - 1]['seasons'][j - 1]['pub_index']).replace('第', '')
                             num = s.replace('话', '')
-                            print(num)
                             jp_title += title + str(num) + ','
                             t = threading.Thread(target=blbl_time.get_av, args=(ep_id, title, num))
                             t.setName(title)
                             if jp_th.find(date + title) == -1:
                                 jp_th += date + title
                                 t.start()
-            logging.info(newtime + ',next')
+            logging.info('not update')
         except Exception as e:
             logging.error(e)
             time.sleep(15)
@@ -96,14 +95,13 @@ def china_animate():
                             ep_id = rehtml_cn['result'][i - 1]['seasons'][j - 1]['ep_id']
                             s = str(rehtml_cn['result'][i - 1]['seasons'][j - 1]['pub_index']).replace('第', '')
                             num = s.replace('话', '')
-                            print(num)
                             cn_title += title + str(num) + ','
                             t = threading.Thread(target=blbl_time.get_av, args=(ep_id, title, num))
                             t.setName(title)
                             if cn_th.find(date + title) == -1:
                                 cn_th += date + title
                                 t.start()
-            logging.info(newtime + ',next')
+            logging.info('not update')
         except Exception as e:
             logging.error(e)
             time.sleep(15)

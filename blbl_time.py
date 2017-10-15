@@ -125,7 +125,7 @@ def japan_animate():
                             if jp_th.find(title + str(num)) == -1:
                                 jp_th += title + str(num) + ','
                                 t.start()
-            logging.info(newtime + ',next')
+            logging.info('not update')
             time.sleep(15)
         except Exception as e:
             logging.error(e)
@@ -160,7 +160,7 @@ def china_animate():
                             if cn_th.find(title + str(num)) == -1:
                                 cn_th += title + str(num) + ','
                                 t.start()
-            logging.info(newtime + ',next')
+            logging.info('not update')
             time.sleep(15)
         except Exception as e:
             logging.error(e)
