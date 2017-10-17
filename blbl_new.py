@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import threading
-import time, os
+import time
 import json, logging
 import blbl_time
 
@@ -40,7 +40,6 @@ def japan_animate():
         try:
             global jp_title
             time.sleep(30)
-            newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H%M', time.localtime())
             date = time.strftime('%m%d', time.localtime())
             if now == '0000' and determine:
@@ -64,9 +63,9 @@ def japan_animate():
                             if jp_th.find(date + title) == -1:
                                 jp_th += date + title
                                 t.start()
-            logging.info('not update')
+            # logging.info('not update')
         except Exception as e:
-            logging.error(e)
+            logging.error(str(e))
             time.sleep(15)
 
 
@@ -77,7 +76,6 @@ def china_animate():
         try:
             global cn_title
             time.sleep(30)
-            newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H%M', time.localtime())
             date = time.strftime('%m%d', time.localtime())
             if now == '0000' and determine:
@@ -101,9 +99,9 @@ def china_animate():
                             if cn_th.find(date + title) == -1:
                                 cn_th += date + title
                                 t.start()
-            logging.info('not update')
+            # logging.info('not update')
         except Exception as e:
-            logging.error(e)
+            logging.error(str(e))
             time.sleep(15)
 
 

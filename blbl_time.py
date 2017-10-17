@@ -31,10 +31,10 @@ def in_mysql(data, av_id):
         if ''.join(animatelist).find(av_id) == -1:
             cursor.execute(sql)
             db.commit()
-            print('sql')
+            logging.info(data + 'save in sql')
             # data = cursor.fetchall()
     except Exception as e:
-        print(e)
+        logging.error(str(e))
         db.rollback()
     db.close()
 
@@ -49,8 +49,8 @@ def posthtml(url, season_id):
         page = opener.open(url, data=login_data).read()
         soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
         return soup
-    except Exception as err:
-        print(err)
+    except Exception as e:
+        logging.error(str(e))
         time.sleep(random.randint(10, 20))
 
 
@@ -61,8 +61,8 @@ def gethtml(url):
         page = opener.open(url).read()
         soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
         return soup
-    except Exception as err:
-        print(err)
+    except Exception as e:
+        logging.error(str(e))
         time.sleep(random.randint(10, 20))
         # continue
 
@@ -84,16 +84,15 @@ def get_av(ep_id, title, num):
                 data = json.dumps(animate, ensure_ascii=False)
                 in_mysql(data, str(av_id))
                 get = False
-                print('my')
             elif str(av_json['message']).find('根据版权方要求') != -1:
-                print(title + 'do not watch')
+                logging.info((title + 'do not watch'))
                 get = False
             if end - now > 36000:
-                print(title + ' is not update')
+                logging.info(title + ' is not update')
                 get = False
             time.sleep(15)
         except Exception as e:
-            print(e)
+            logging.error(str(e))
             time.sleep(15)
 
 
@@ -102,7 +101,6 @@ def japan_animate():
     determine = True
     while True:
         try:
-            newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H:%M', time.localtime())
             if now.find('00:00') != -1 and determine:
                 jp_th = ''
@@ -125,10 +123,10 @@ def japan_animate():
                             if jp_th.find(title + str(num)) == -1:
                                 jp_th += title + str(num) + ','
                                 t.start()
-            logging.info('not update')
+            # logging.info('not update')
             time.sleep(15)
         except Exception as e:
-            logging.error(e)
+            logging.error(str(e))
             time.sleep(15)
 
 
@@ -137,7 +135,6 @@ def china_animate():
     determine = True
     while True:
         try:
-            newtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
             now = time.strftime('%H:%M', time.localtime())
             if now.find('00:00') != -1 and determine:
                 cn_th = ''
@@ -160,10 +157,10 @@ def china_animate():
                             if cn_th.find(title + str(num)) == -1:
                                 cn_th += title + str(num) + ','
                                 t.start()
-            logging.info('not update')
+            # logging.info('not update')
             time.sleep(15)
         except Exception as e:
-            logging.error(e)
+            logging.error(str(e))
             time.sleep(15)
 
 
