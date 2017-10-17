@@ -7,12 +7,12 @@ import datetime
 from bs4 import BeautifulSoup
 import json, logging
 import random
+import collections
 
 DIR = os.path.dirname(__file__)
 
-
 logging.basicConfig(level=logging.INFO,
-                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 def in_mysql(data, av_id):
@@ -22,16 +22,16 @@ def in_mysql(data, av_id):
     sql = "INSERT INTO new_animate(rejson) VALUES (\'" + data + "\')"
     try:
         cursor.execute(tsql)
-        data = cursor.fetchall()
+        find_data = cursor.fetchall()
         animatelist = []
-        for strD in data:
+        for strD in find_data:
             animatelist.append(strD)
         for i in range(len(animatelist)):
             animatelist[i] = str(animatelist[i])
         if ''.join(animatelist).find(av_id) == -1:
             cursor.execute(sql)
             db.commit()
-            logging.info(data + 'save in sql')
+            logging.info('save in sql')
             # data = cursor.fetchall()
     except Exception as e:
         logging.error(str(e))
@@ -80,7 +80,11 @@ def get_av(ep_id, title, num):
             av_json = json.loads(str(av_html))
             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
                 av_id = av_json['result']['aid']
-                animate = {'date': date, 'title': title, 'num': num, 'av_id': av_id}
+                animate = collections.OrderedDict()
+                animate['data'] = date
+                animate['title'] = title
+                animate['num'] = num
+                animate['av_id'] = av_id
                 data = json.dumps(animate, ensure_ascii=False)
                 in_mysql(data, str(av_id))
                 get = False
