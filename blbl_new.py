@@ -66,7 +66,7 @@ def japan_animate():
             # logging.info('not update')
         except Exception as e:
             logging.error(str(e))
-            time.sleep(15)
+            time.sleep(30)
 
 
 def china_animate():
@@ -102,7 +102,7 @@ def china_animate():
             # logging.info('not update')
         except Exception as e:
             logging.error(str(e))
-            time.sleep(15)
+            time.sleep(30)
 
 
 threads = []

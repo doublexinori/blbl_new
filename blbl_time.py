@@ -5,8 +5,7 @@ import time, os, MySQLdb
 import urllib.request as request
 import datetime
 from bs4 import BeautifulSoup
-import json, logging
-import random
+import json, logging, random
 import collections
 
 DIR = os.path.dirname(__file__)
@@ -28,6 +27,7 @@ def in_mysql(data, av_id):
             animatelist.append(strD)
         for i in range(len(animatelist)):
             animatelist[i] = str(animatelist[i])
+        time.sleep(random.randint(10,20))
         if ''.join(animatelist).find(av_id) == -1:
             cursor.execute(sql)
             db.commit()
@@ -46,24 +46,26 @@ def posthtml(url, season_id):
         ]).encode(encoding='UTF8')
         opener = request.build_opener()
         opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        page = opener.open(url, data=login_data).read()
+        page = opener.open(url, data=login_data, timeout=15).read()
         soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
+        opener.close()
         return soup
     except Exception as e:
         logging.error(str(e))
-        time.sleep(random.randint(10, 20))
+        opener.close()
 
 
 def gethtml(url):
     try:
         opener = request.build_opener()
         opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        page = opener.open(url).read()
+        page = opener.open(url, timeout=15).read()
         soup = BeautifulSoup(page.decode('utf-8'), 'html.parser')
+        opener.close()
         return soup
     except Exception as e:
         logging.error(str(e))
-        time.sleep(random.randint(10, 20))
+        opener.close()
         # continue
 
 
@@ -94,10 +96,10 @@ def get_av(ep_id, title, num):
             if end - now > 36000:
                 logging.info(title + ' is not update')
                 get = False
-            time.sleep(15)
+            time.sleep(30)
         except Exception as e:
             logging.error(str(e))
-            time.sleep(15)
+            time.sleep(30)
 
 
 def japan_animate():
@@ -128,10 +130,10 @@ def japan_animate():
                                 jp_th += title + str(num) + ','
                                 t.start()
             # logging.info('not update')
-            time.sleep(15)
+            time.sleep(30)
         except Exception as e:
             logging.error(str(e))
-            time.sleep(15)
+            time.sleep(30)
 
 
 def china_animate():
@@ -162,10 +164,10 @@ def china_animate():
                                 cn_th += title + str(num) + ','
                                 t.start()
             # logging.info('not update')
-            time.sleep(15)
+            time.sleep(30)
         except Exception as e:
             logging.error(str(e))
-            time.sleep(15)
+            time.sleep(30)
 
 
 threads = []
