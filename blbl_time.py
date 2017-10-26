@@ -11,7 +11,10 @@ import collections
 DIR = os.path.dirname(__file__)
 
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='animate.log',
+                    filemode='w')
 
 
 def in_mysql(data, av_id):
@@ -27,7 +30,6 @@ def in_mysql(data, av_id):
             animatelist.append(strD)
         for i in range(len(animatelist)):
             animatelist[i] = str(animatelist[i])
-        time.sleep(random.randint(10,20))
         if ''.join(animatelist).find(av_id) == -1:
             cursor.execute(sql)
             db.commit()
@@ -72,22 +74,22 @@ def gethtml(url):
 def get_av(ep_id, title, num):
     get = True
     now = 1
-    print('th')
+    logging.info('th')
     while get:
         try:
             date = time.strftime('%m%d', time.localtime())
-            logging.info('in')
             end = datetime.datetime.now().second
             av_html = posthtml('https://bangumi.bilibili.com/web_api/get_source', ep_id)
             av_json = json.loads(str(av_html))
             if str(av_json['message']).find('地球上找不到该内容哦') == -1 and str(av_json['message']).find('根据版权方要求') == -1:
                 av_id = av_json['result']['aid']
                 animate = collections.OrderedDict()
-                animate['data'] = date
+                animate['date'] = date
                 animate['title'] = title
                 animate['num'] = num
                 animate['av_id'] = av_id
                 data = json.dumps(animate, ensure_ascii=False)
+                time.sleep(random.randint(5, 20))
                 in_mysql(data, str(av_id))
                 get = False
             elif str(av_json['message']).find('根据版权方要求') != -1:

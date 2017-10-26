@@ -7,9 +7,6 @@ import blbl_time
 jp_title = ''
 cn_title = ''
 
-logging.basicConfig(level=logging.WARNING,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
-
 
 def get_title():
     global jp_title, cn_title
@@ -63,7 +60,7 @@ def japan_animate():
                             if jp_th.find(date + title) == -1:
                                 jp_th += date + title
                                 t.start()
-            # logging.info('not update')
+                                # logging.info('not update')
         except Exception as e:
             logging.error(str(e))
             time.sleep(30)
@@ -99,7 +96,7 @@ def china_animate():
                             if cn_th.find(date + title) == -1:
                                 cn_th += date + title
                                 t.start()
-            # logging.info('not update')
+                                # logging.info('not update')
         except Exception as e:
             logging.error(str(e))
             time.sleep(30)
