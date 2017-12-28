@@ -12,9 +12,11 @@ DIR = os.path.dirname(__file__)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
-                    datefmt='%a, %d %b %Y %H:%M:%S',
-                    filename='animate.log',
-                    filemode='w')
+                    datefmt='%a, %d %b %Y %H:%M:%S', )
+
+
+# filename='animate.log',
+# filemode='w')
 
 
 def in_mysql(data, av_id):
@@ -92,9 +94,9 @@ def get_av(ep_id, title, num):
                 time.sleep(random.randint(5, 20))
                 in_mysql(data, str(av_id))
                 get = False
-            elif str(av_json['message']).find('根据版权方要求') != -1:
-                logging.info((title + 'do not watch'))
-                get = False
+            # elif str(av_json['message']).find('根据版权方要求') != -1:
+            #     logging.info((title + 'do not watch'))
+            #     get = False
             if end - now > 36000:
                 logging.info(title + ' is not update')
                 get = False
